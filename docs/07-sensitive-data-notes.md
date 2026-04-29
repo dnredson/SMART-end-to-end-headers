@@ -31,7 +31,7 @@ SenML payload values
 container IP topology
 ```
 
-## Suggested README disclaimer
+## DISCLAIMER
 
 ```text
 This repository contains packet captures from a production IoT deployment. The captures are intended for private research collaboration and may contain real payloads, topics, identifiers, and credentials. Do not redistribute publicly without sanitization.
