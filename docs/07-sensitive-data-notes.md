@@ -19,12 +19,6 @@ service/container topology
 
 The light artifacts are easier to share, but they are not fully anonymized.
 
-## Recommendation
-
-For close academic collaboration, a private Git repository is acceptable if all collaborators understand that the captures contain production-sensitive data.
-
-For public release, the dataset should be sanitized or reproduced using disposable credentials and synthetic data.
-
 ## Sensitive fields observed conceptually
 
 Examples of sensitive data types that may appear in the traces:
