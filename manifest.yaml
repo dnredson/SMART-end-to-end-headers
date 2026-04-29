@@ -1,0 +1,78 @@
+run_id: lorawan-e2e-r04-20260429
+purpose: >
+  Empirical packet-level capture of an IoT data path from a Raspberry Pi
+  sensor/gateway host to a cloud IoT platform and its storage backend.
+
+notes:
+  - This is a production capture.
+  - Packet captures may contain real payloads, IP addresses, MQTT topics, HTTP headers, and authorization tokens.
+  - The light artifacts exclude the largest auxiliary loopback capture where possible.
+  - The validated path is MQTT from the RPi to the ChirpStack/Mosquitto host, then MQTT to a Python adapter, then HTTP/SenML to Magistrala/SuperMQ.
+
+hosts:
+  G1_RPI_GATEWAY:
+    hostname: mist-5
+    ip: 192.168.1.126
+    role: Raspberry Pi sensor/gateway host
+    relevant_processes:
+      - /home/mist/Software/EnvData.py
+      - ./lora_pkt_fwd
+    relevant_observation:
+      - EnvData.py publishes MQTT messages to 177.104.61.23:1883.
+      - lora_pkt_fwd points to TTN/au1.cloud.thethings.network and is not the primary path to the local platform.
+    capture_files:
+      - captures/lorawan-e2e-r04-20260429__G1_RPI_GATEWAY_ANY_MQTT_AND_UDP1700.pcap
+    important_filters:
+      - "host 177.104.61.23 and tcp port 1883"
+      - "udp port 1700"
+      - "udp port 9999"
+
+  C1_CHIRPSTACK_CLOUD:
+    ip: 177.104.61.23
+    role: ChirpStack/Mosquitto cloud host
+    relevant_services:
+      - chirpstack
+      - chirpstack-gateway-bridge
+      - mosquitto
+    capture_files:
+      - captures/lorawan-e2e-r04-20260429__C1A_CHIRPSTACK_EXTERNAL_ENS3__177.104.61.23.pcap
+      - captures/lorawan-e2e-r04-20260429__C1B_CHIRPSTACK_LOOPBACK__lo.pcap
+    important_filters:
+      - "tcp port 1883"
+      - "udp port 1700"
+      - "host 177.104.61.21"
+      - "udp port 9999"
+
+  C2_MAGISTRALA_ADAPTER:
+    ip: 177.104.61.21
+    role: Python adapter and Magistrala/SuperMQ Docker host
+    relevant_processes:
+      - /usr/bin/python3 /home/ubuntu/adapter/src/main.py
+    docker_network:
+      name: absmach_magistrala_magistrala-base-net
+      bridge: br-2b65035ed9b3
+      subnet: 172.18.0.0/16
+    key_containers:
+      magistrala-nginx: 172.18.0.21
+      supermq-mqtt: 172.18.0.16
+      supermq-http: 172.18.0.45
+      magistrala-timescale-writer: 172.18.0.3
+      magistrala-timescale: 172.18.0.38
+      supermq-nats: 172.18.0.20
+      supermq-rabbitmq: 172.18.0.5
+    capture_files:
+      - captures/lorawan-e2e-r04-20260429__C2A_MAGISTRALA_EXTERNAL_ENS3__177.104.61.21.pcap
+      - captures/lorawan-e2e-r04-20260429__C2B_MAGISTRALA_DOCKER_BRIDGE__br-2b65035ed9b3.pcap
+    important_filters:
+      - "host 177.104.61.23 and tcp port 1883"
+      - "tcp port 8008"
+      - "tcp port 4222"
+      - "tcp port 5432"
+      - "udp port 9999"
+
+logical_markers:
+  marker_protocol: UDP
+  marker_port: 9999
+  purpose: >
+    Marker packets delimit the capture window and help locate START/STOP
+    positions inside the packet traces.

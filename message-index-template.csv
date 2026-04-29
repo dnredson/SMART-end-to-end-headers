@@ -1,0 +1,7 @@
+run_id,logical_msg_id,approx_time_utc,source_capture,source_ip,destination_ip,protocol,src_port,dst_port,observed_representation,notes
+lorawan-e2e-r04-20260429,msg-001,,G1_RPI_GATEWAY,192.168.1.126,177.104.61.23,MQTT/TCP,,1883,"MQTT publish","RPi EnvData.py publication"
+lorawan-e2e-r04-20260429,msg-001,,C1A_CHIRPSTACK_EXTERNAL_ENS3,192.168.1.126,177.104.61.23,MQTT/TCP,,1883,"MQTT event at cloud broker","Same logical sensor stream observed at C1"
+lorawan-e2e-r04-20260429,msg-001,,C2A_MAGISTRALA_EXTERNAL_ENS3,177.104.61.23,177.104.61.21,MQTT/TCP,1883,,"MQTT event to adapter","Adapter consumes from broker"
+lorawan-e2e-r04-20260429,msg-001,,C2B_MAGISTRALA_DOCKER_BRIDGE,172.18.0.1,172.18.0.45,HTTP/TCP,,8008,"HTTP POST with SenML","Adapter writes to Magistrala/SuperMQ"
+lorawan-e2e-r04-20260429,msg-001,,C2B_MAGISTRALA_DOCKER_BRIDGE,172.18.0.45,172.18.0.20,NATS/TCP,,4222,"Internal platform message","SuperMQ internal messaging"
+lorawan-e2e-r04-20260429,msg-001,,C2B_MAGISTRALA_DOCKER_BRIDGE,172.18.0.3,172.18.0.38,PostgreSQL/TCP,,5432,"Database write path","Timescale writer to TimescaleDB"
